@@ -115,5 +115,5 @@ app.listen(PORT, async () => {
   console.log(`✅ HTTPサーバー起動: ポート ${PORT}`);
   await initDb();
   console.log("✅ データベース初期化完了");
-  client.login(DISCORD_TOKEN);
+client.login(DISCORD_TOKEN).catch(e => console.error("❌ Botログイン失敗:", e));
 });
