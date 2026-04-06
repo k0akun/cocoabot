@@ -14,7 +14,7 @@ const {
 } = process.env;
 
 if (!DISCORD_TOKEN || !DISCORD_CLIENT_ID) {
-  console.error("❌ .env に DISCORD_TOKEN と DISCORD_CLIENT_ID を設定してください");
+  console.error("❌ DISCORD_TOKEN と DISCORD_CLIENT_ID を設定してください");
   process.exit(1);
 }
 
@@ -70,9 +70,6 @@ client.on(Events.MessageCreate, async (message) => {
   await MessageQueue.push(message.author.displayName, message.content);
 });
 
-// ========================================
-// Express
-// ========================================
 const app = express();
 app.use(express.json());
 
@@ -108,12 +105,12 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
-// ========================================
-// 起動
-// ========================================
+process.on("unhandledRejection", (e) => console.error("❌ 未処理エラー:", e));
+
 app.listen(PORT, async () => {
   console.log(`✅ HTTPサーバー起動: ポート ${PORT}`);
   await initDb();
   console.log("✅ データベース初期化完了");
-client.login(DISCORD_TOKEN).catch(e => console.error("❌ Botログイン失敗:", e));
+  console.log("🔄 Botログイン試行中...");
+  client.login(DISCORD_TOKEN).catch(e => console.error("❌ Botログイン失敗:", e));
 });
